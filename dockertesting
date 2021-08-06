@@ -1,0 +1,2 @@
+from alpine:latest
+CMD ["/bin/sh"]
