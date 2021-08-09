@@ -6,7 +6,6 @@ RUN apk update && \
     touch /run/openrc/softlevel 
     
 RUN    rc-service postgresql setup
-RUN    rc-service postgresql start
 RUN    rc-update add postgresql 
 RUN    rm -rf /var/cache/apk/*
 
