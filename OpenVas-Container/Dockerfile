@@ -1,16 +1,37 @@
 FROM alpine:latest
+LABEL maintainer = "y0uf0ol - https://github.com/y0uf0ol"
 
-RUN apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant ospd-openvas postgresql openrc --update --no-cache && \
-    
-    
+RUN apk add postgresql openrc --update --no-cache && \
+
     mkdir -p /run/openrc && \
-    touch /run/openrc/softlevel  && \
-    
-    rc-service postgresql setup && \ 
-    rc-update add postgresql && \
-    rm -rf /var/cache/apk/* && \
+    touch /run/openrc/softlevel && \
 
-   #--- GVMd run as gvm user
+#--- Postgresql  config
+      rc-service postgresql setup && \ 
+      rc-update add postgresql && \
+
+    apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant ospd-openvas --update --no-cache && \
+    
+   
+
+
+    #--- Postgresql  start
+  
+    rc-service postgresql start && \
+
+    #--- Create and configure the gvm database
+    su - postgres && \
+    createuser -DRS gvm && \
+    createdb -O gvm gvmd && \
+    psql gvmd && \
+    create role dba with superuser noinherit && \
+    grant dba to gvm && \
+    create extension if not exists "uuid-ossp" && \
+    create extension "pgcrypto" && \
+    \q && \
+    exit && \
+
+    #--- GVMd run as gvm user
     su - gvm && \
     gvm-manage-certs -a && \
     exit && \
@@ -23,7 +44,7 @@ RUN apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant os
 
 
     #--- Download the GVM definitions and start GVMd
-    su - gvm && \
+    
     greenbone-feed-sync --type GVMD_DATA && \
     greenbone-feed-sync --type SCAP && \
     greenbone-feed-sync --type CERT && \
@@ -47,4 +68,3 @@ RUN apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant os
 
 
 EXPOSE 9392/tcp
-
