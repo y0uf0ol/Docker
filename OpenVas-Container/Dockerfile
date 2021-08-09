@@ -6,7 +6,7 @@ RUN apk update && \
      #--- Postgresql  Config
     rc-service postgresql setup && \
     rc-service postgresql start && \
-    rc-update add postgresql
+    rc-update add postgresql && \
     rm -rf /var/cache/apk/*
 
 expose 9392/tcp
