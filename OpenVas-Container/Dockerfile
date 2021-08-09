@@ -17,7 +17,7 @@ RUN apk add postgresql openrc --update --no-cache && \
 
     #--- Postgresql  start
   
-    rc-service postgresql stop && \
+    ping localhost -c 20 && \
     rc-service postgresql start && \
 
     #--- Create and configure the gvm database
