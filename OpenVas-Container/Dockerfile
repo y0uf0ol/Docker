@@ -1,12 +1,14 @@
 FROM alpine:latest
 
-RUN apk update && \
-    apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant ospd-openvas postgresql openrc --no-cache && \
+RUN apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant ospd-openvas postgresql openrc --update --no-cache && \
+    
+    
     mkdir -p /run/openrc && \
     touch /run/openrc/softlevel  && \
     
-    rc-service postgresql setup && \
-    rc-update add postgresql  && \
+    rc-service postgresql setup && \ 
+    rc-update add postgresql && \
+    rc-service postgresql start && \
     rm -rf /var/cache/apk/* && \
 
 #--- Create and configure the gvm database
