@@ -8,19 +8,10 @@ RUN apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant os
     
     rc-service postgresql setup && \ 
     rc-update add postgresql && \
-    rc-service postgresql start && \
     rm -rf /var/cache/apk/* && \
 
-#--- Create and configure the gvm database
-    su - postgres && \
-    createuser -DRS gvm && \
-    createdb -O gvm gvmd && \
-    psql gvmd && \
-    create role dba with superuser noinherit && \
-    grant dba to gvm && \
-    create extension if not exists "uuid-ossp" && \
-    create extension "pgcrypto" && \
+    su - gvm && \
+    gvm-manage-certs -a && \
     exit && \
-    exit 
 
 EXPOSE 9392/tcp
