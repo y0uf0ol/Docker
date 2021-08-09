@@ -1,11 +1,11 @@
 FROM alpine:latest
 
 RUN apk update && \
-    apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant ospd-openvas && \
+    apk add openvas openvas-config gvmd gvm-libs greenbone-security-assistant ospd-openvas
     
-    rc-service postgresql setup && \
-    rc-service postgresql start && \
-    rc-update add postgresql && \
-    rm -rf /var/cache/apk/*
+RUN    rc-service postgresql setup
+RUN    rc-service postgresql start
+RUN    rc-update add postgresql 
+RUN    rm -rf /var/cache/apk/*
 
 EXPOSE 9392/tcp
